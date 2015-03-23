@@ -44,9 +44,6 @@ ADD ./services/mysql /etc/service/mysql/run
 ADD ./services/php-fpm /etc/service/php-fpm/run
 
 # Installation helpers
-ADD ./php/index.php /installer.php
-ADD ./php/database.php /database.php
-ADD ./php/user_setup.php /user_setup.php
 ADD ./shell/composer /usr/local/bin/composer
 
 # Execute permissions where needed
