@@ -42,7 +42,6 @@ ADD ./conf/nginx-site.conf /etc/nginx/sites-available/default
 ADD ./services/nginx /etc/service/nginx/run
 ADD ./services/mysql /etc/service/mysql/run
 ADD ./services/php-fpm /etc/service/php-fpm/run
-ADD ./services/koken /etc/service/koken/run
 
 # Installation helpers
 ADD ./php/index.php /installer.php
