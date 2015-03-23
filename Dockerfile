@@ -13,7 +13,7 @@ RUN \
 	add-apt-repository ppa:ondrej/php5-5.6 && \
 	add-apt-repository -y ppa:nginx/stable && \
 	apt-get update && \
-	apt-get -y install nginx mysql-server mysql-client php5-fpm php5-mysql php5-curl php5-mcrypt  pwgen wget unzip
+	apt-get -y install nginx mysql-server mysql-client php5-fpm php5-mysql php5-curl php5-mcrypt php5-cli php5-gd php5-intl php5-xsl pwgen wget unzip
 
 # Next composer and global composer package, as their versions may change from time to time
 RUN curl -sS https://getcomposer.org/installer | php \
@@ -41,10 +41,18 @@ ADD ./conf/nginx-site.conf /etc/nginx/sites-available/default
 ADD ./conf/php.ini /etc/php5/cli/conf.d/00_custom.ini
 ADD ./conf/php.ini /etc/php5/fpm/conf.d/00_custom.ini
 
+# Enable redis
+
+# Configure redis
+RUN mkdir /etc/service/redis
+RUN sed -i 's/daemonize yes/daemonize no/g' /etc/redis/redis.conf
+RUN sed -i 's/bind 127.0.0.1/# bind 127.0.0.1/g' /etc/redis/redis.conf
+
 # Add runit files for each service
 ADD ./services/nginx /etc/service/nginx/run
 ADD ./services/mysql /etc/service/mysql/run
 ADD ./services/php-fpm /etc/service/php-fpm/run
+ADD ./services/redis /etc/service/redis/run
 
 ADD ./shell/start.sh /etc/my_init.d/001_standard.sh
 
@@ -55,14 +63,16 @@ ADD ./shell/composer /usr/local/bin/composer
 RUN \
 	chmod +x /etc/service/nginx/run && \
 	chmod +x /etc/service/mysql/run && \
-	chmod +x /etc/service/php-fpm/run
+	chmod +x /etc/service/php-fpm/run && \
+	chmod +x /etc/service/redis/run
 
 # Data volumes
-VOLUME ["/var/www", "/var/lib/mysql"]
+VOLUME ["/var/www", "/var/lib/mysql", "/var/lib/redis"]
 
 # Expose 8080 to the host
 EXPOSE 80
 EXPOSE 3360
+EXPOSE 6379
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
