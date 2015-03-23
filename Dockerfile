@@ -43,6 +43,8 @@ ADD ./services/nginx /etc/service/nginx/run
 ADD ./services/mysql /etc/service/mysql/run
 ADD ./services/php-fpm /etc/service/php-fpm/run
 
+ADD ./shell/start.sh /etc/my_init.d/001_standard.sh
+
 # Installation helpers
 ADD ./shell/composer /usr/local/bin/composer
 
