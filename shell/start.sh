@@ -21,8 +21,8 @@ if [ ! -f /mysql-configured ]; then
 
   # Generate Koken database and user credentials
   echo "=> Generating database and credentials"
-  DB_NAME="project"
-  MYSQL_PASSWORD="root"
+  DB_NAME=${DB_NAME:-project}
+  MYSQL_PASSWORD=${MYSQL_PASSWORD:-root}
 
   mysqladmin -u root password $MYSQL_PASSWORD
   mysql -uroot -p$MYSQL_PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$MYSQL_PASSWORD' WITH GRANT OPTION; FLUSH PRIVILEGES;"
