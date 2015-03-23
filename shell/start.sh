@@ -26,7 +26,7 @@ if [ ! -f /mysql-configured ]; then
 
   mysqladmin -u root password $MYSQL_PASSWORD
   mysql -uroot -p$MYSQL_PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$MYSQL_PASSWORD' WITH GRANT OPTION; FLUSH PRIVILEGES;"
-  mysql -uroot -p$MYSQL_PASSWORD -e "CREATE DATABASE $DB_NAME;"
+  mysql -uroot -p$MYSQL_PASSWORD -e "CREATE DATABASE '$DB_NAME';"
 
   mysqladmin -uroot -p$MYSQL_PASSWORD shutdown
 fi
