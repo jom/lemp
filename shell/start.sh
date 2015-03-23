@@ -1,12 +1,9 @@
 #!/bin/bash
 
-#########################################################
-# The following should be run only if Koken hasn't been #
-# installed yet                                         #
-#########################################################
 
-if [ ! -f /usr/share/nginx/www/storage/configuration/database.php ] && [ ! -f /usr/share/nginx/www/database.php ]; then
-
+if [ ! -f /mysql-configured ]; then
+  touch /mysql-configured
+  
   if [ ! -f /var/lib/mysql/ibdata1 ]; then
     mysql_install_db
   fi
@@ -24,29 +21,14 @@ if [ ! -f /usr/share/nginx/www/storage/configuration/database.php ] && [ ! -f /u
 
   # Generate Koken database and user credentials
   echo "=> Generating database and credentials"
-  KOKEN_DB="koken"
-  MYSQL_PASSWORD=`pwgen -c -n -1 12`
-  KOKEN_PASSWORD=`pwgen -c -n -1 12`
+  DB_NAME="project"
+  MYSQL_PASSWORD="root"
 
   mysqladmin -u root password $MYSQL_PASSWORD
   mysql -uroot -p$MYSQL_PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$MYSQL_PASSWORD' WITH GRANT OPTION; FLUSH PRIVILEGES;"
-  mysql -uroot -p$MYSQL_PASSWORD -e "CREATE DATABASE koken; GRANT ALL PRIVILEGES ON koken.* TO 'koken'@'localhost' IDENTIFIED BY '$KOKEN_PASSWORD'; FLUSH PRIVILEGES;"
+  mysql -uroot -p$MYSQL_PASSWORD -e "CREATE DATABASE $DB_NAME;"
 
   mysqladmin -uroot -p$MYSQL_PASSWORD shutdown
-
-  echo "=> Setting up Koken"
-  # Setup webroot
-  rm -rf /usr/share/nginx/www/*
-  mkdir -p /usr/share/nginx/www
-
-  # Move install helpers into place
-  mv /installer.php /usr/share/nginx/www/installer.php
-  mv /user_setup.php /usr/share/nginx/www/user_setup.php
-
-  # Configure Koken database connection
-  sed -e "s/___PWD___/$KOKEN_PASSWORD/" /database.php > /usr/share/nginx/www/database.php
-  chown www-data:www-data /usr/share/nginx/www/
-  chmod -R 755 /usr/share/nginx/www
 fi
 
 ################################################################
