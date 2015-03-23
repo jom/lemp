@@ -37,6 +37,8 @@ RUN \
 
 # nginx site conf
 ADD ./conf/nginx-site.conf /etc/nginx/sites-available/default
+ADD ./conf/php.ini /etc/php5/cli/conf.d/00_custom.ini
+ADD ./conf/php.ini /etc/php5/fpm/conf.d/00_custom.ini
 
 # Add runit files for each service
 ADD ./services/nginx /etc/service/nginx/run
